@@ -1,5 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
+import { join } from 'node:path';
 import { PassThrough } from 'node:stream';
 import * as vscode from 'vscode';
 
@@ -15,7 +16,9 @@ function splitPath(path: string) {
 		if (path.includes("\\\\")) {
 			delimiter = "\\\\"
     }
-		return path.split(delimiter)
+		let parts = path.split(delimiter) 
+		parts.shift()
+		return parts
 }
 
 // /home/codeliger/go/src/gitlab.com/datavalet/skypiea/dot/dotweb/website/src/components/filters/locations/LocationPicker.svelte
@@ -48,11 +51,17 @@ export function RelativeCommonAncestor(to: string, from: string, seperator = "/"
 			newRelativePath.unshift("..");
 			a++
 		}else if (b < importingFrom.length-1) {
+			if (newRelativePath.length == 0) {
+				newRelativePath.unshift('.')
+			}
 			newRelativePath.push(importingFrom[b])
 			b++
 		}
 	}
 
+	if (newRelativePath.length == 0) {
+    newRelativePath.unshift(".");
+  }
 	newRelativePath.push(importingFrom[importingFrom.length-1])
 	return newRelativePath.join(seperator)
 }
@@ -73,11 +82,11 @@ export function activate(context: vscode.ExtensionContext) {
 		// The code you place here will be executed every time your command is executed
 		let activeFilePath = getCurrentPath()
 
-		if (activeFilePath == ""){
+		if (activeFilePath === ""){
 			vscode.window.showErrorMessage("You must have a file opened");
 		}
 
-		if (selectedFilePath == activeFilePath) {
+		if (selectedFilePath === activeFilePath) {
 			let path = "./" + vscode.workspace.asRelativePath(activeFilePath);
 			vscode.env.clipboard.writeText(path);
 			vscode.window.showInformationMessage("Relative path diff copied");
