@@ -17,7 +17,7 @@ The location of the webpage you have currently open:
 
 `/home/username/project1/subproject1.1/javascript/ts/webpage.js`
 
-The relative path you have to use because of some dumb restriction:
+The relative path you have to use because of some restriction:
 
 ../../../../project2/subproject2.1/javascript/ts/reusable/ui/component.js
 
